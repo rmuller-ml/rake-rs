@@ -8,7 +8,7 @@ use std::collections::HashMap;
 
 lazy_static! {
     static ref NUM_RE: Regex = Regex::new(r"-?\p{N}+[./٫,']?\p{N}*").unwrap();
-    static ref PUNC_RE: Regex = Regex::new(r"[^\P{P}-]|\s+-\s+").unwrap();
+    static ref PUNC_RE: Regex = Regex::new(r"[^a-zA-Z0-9_/ -]").unwrap();
 }
 
 /// Represents an instance of Rake type
@@ -30,6 +30,12 @@ impl Rake {
         let phrases = self.phrases(PUNC_RE.split(text));
         let word_scores = self.word_scores(&phrases);
         self.candidate_keywords(&phrases, word_scores)
+    }
+
+    /// Removes stopwords, do not score them, and concates output
+    pub fn run_phrase(&self, text: &str) -> String {
+        let phrases = self.phrases(PUNC_RE.split(text));
+        phrases.iter().map(|p| p.join(" ").to_string()).collect::<Vec<String>>().join(" ")
     }
 
     /// Runs RAKE algorithm on chunks of text (such as sentences), and returns a vector of keywords.
