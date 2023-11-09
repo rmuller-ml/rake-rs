@@ -35,6 +35,7 @@ impl Rake {
     /// Removes stopwords, do not score them, and concates output
     pub fn run_phrase(&self, text: &str) -> String {
         let phrases = self.phrases(PUNC_RE.split(text));
+        if phrases.len() == 0 {return String::new();}
         phrases.iter().map(|p| p.join(" ").to_string()).collect::<Vec<String>>().join(" ")
     }
 
